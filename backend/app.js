@@ -3,13 +3,16 @@ const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
 
+const AppError = require("./AppError");
 const userRouter = require("./routes/userRoute");
+const deviceRouter = require("./routes/deviceRoute");
 const app = express();
 
 if (process.env.NODE_ENV === "development") app.use(morgan("dev"));
 app.use(cors());
 app.use(express.json());
 app.use("/api/users", userRouter);
+app.use("/api/devices", deviceRouter);
 
 app.use("*", (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
