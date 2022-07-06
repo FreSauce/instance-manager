@@ -6,8 +6,16 @@ exports.generateCode = async (req, res, next) => {
   try {
     const code = uuidv4();
     let device;
-    if (req.body.deviceId) device = await Device.findById(req.body.deviceId);
-    else
+    if (req.body.deviceId) {
+      device = await Device.findById(req.body.deviceId);
+      if (device)
+        device = await Device.findByIdAndUpdate(
+          device._id,
+          { generatedCode: code },
+          { new: true }
+        );
+      else return next(new AppError("Invalid device id", 400));
+    } else
       device = await Device.create({
         generatedCode: code,
       });
