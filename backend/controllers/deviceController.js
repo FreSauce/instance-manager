@@ -5,12 +5,15 @@ const { v4: uuidv4 } = require("uuid");
 exports.generateCode = async (req, res, next) => {
   try {
     const code = uuidv4();
-    const newDevice = await Device.create({
-      generatedCode: code,
-    });
+    let device;
+    if (req.body.deviceId) device = await Device.findById(req.body.deviceId);
+    else
+      device = await Device.create({
+        generatedCode: code,
+      });
     res.status(201).json({
       status: "success",
-      newDevice,
+      device,
     });
   } catch (err) {
     next(new AppError(err.message, 500));
@@ -32,7 +35,9 @@ exports.verifyCode = async (req, res, next) => {
         user: req.user._id,
       },
       { new: true }
-    );
+    ).populate({
+      path: "user",
+    });
     res.status(200).json({
       status: "success",
       updatedDevice,

@@ -4,7 +4,7 @@ const deviceController = require("../controllers/deviceController");
 
 const router = express.Router();
 
-router.get("/generate-code", deviceController.generateCode);
+router.post("/generate-code", deviceController.generateCode);
 router.post(
   "/verify-code",
   authController.protect,
