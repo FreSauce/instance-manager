@@ -7,7 +7,7 @@ const router = express.Router();
 router.post("/generate-code", deviceController.generateCode);
 router.post(
   "/verify-code",
-  authController.protect,
+  // authController.protect,
   deviceController.verifyCode
 );
 

@@ -17,6 +17,10 @@ async function init() {
     })
   );
   console.log(chalk.blue("Welcome to Instance Manager"));
+  let deviceId = readDataFromFile("deviceId");
+  if (deviceId) {
+    console.log(chalk.yellowBright(`Device ID: ${deviceId}`));
+  }
   console.log(chalk.blue("Which action would you like to perform? "));
   inquirer
     .prompt([
@@ -24,13 +28,28 @@ async function init() {
         type: "list",
         name: "action",
         message: chalk.green("Please select an option: "),
-        choices: ["Pair Device", "Exit"],
+        choices: [
+          {
+            name: "Pair Device",
+            value: "pairDevice",
+            disabled: readDataFromFile("isVerified"),
+          },
+          {
+            name: "Connect Device",
+            value: "connectDevice",
+            disabled: !readDataFromFile("isVerified"),
+          },
+          "Exit",
+        ],
       },
     ])
     .then(async (answers) => {
       switch (answers.action) {
-        case "Pair Device":
+        case "pairDevice":
           await pairDevice();
+          break;
+        case "connectDevice":
+          connectDevice();
           break;
         case "Exit":
           process.exit();
@@ -41,9 +60,6 @@ async function init() {
 
 async function pairDevice() {
   let deviceId = readDataFromFile("deviceId");
-  if (deviceId) {
-    console.log(chalk.blue(`Device ID: ${deviceId}`));
-  }
   axios
     .post(URL + "/generate-code", {
       deviceId: deviceId,
@@ -51,6 +67,7 @@ async function pairDevice() {
     .then(async (res) => {
       console.log(res.data);
       saveDataToFile("deviceId", res.data.device._id);
+      saveDataToFile("authToken", res.data.token);
       console.log(
         chalk.bgGreenBright("The code is: " + res.data.device.generatedCode)
       );
@@ -59,25 +76,25 @@ async function pairDevice() {
 }
 
 async function verificationPrompt() {
-  let isConnected = false;
-  while (!isConnected) {
+  let isVerified = false;
+  while (!isVerified) {
     let result = await inquirer.prompt([
       {
         type: "input",
         name: "verify",
         message: chalk.cyan(
-          `Type "confirm" after you have verified the code on the website: `
+          `Type "confirm" after you have verified the code on the website:`
         ),
       },
     ]);
     if (result.verify === "confirm") {
       connectDevice();
       await sleep(2000);
-      isConnected = readDataFromFile("isConnected");
-      if (isConnected) {
-        console.log(chalk.bgGreenBright("Device connected"));
+      isVerified = readDataFromFile("isVerified");
+      if (isVerified) {
+        console.log(chalk.bgGreenBright("Device verified"));
       } else {
-        console.log(chalk.bgRedBright("Device not connected. Try again"));
+        console.log(chalk.bgRedBright("Device not verified. Try again"));
       }
     } else {
       console.log(
