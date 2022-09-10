@@ -1,9 +1,9 @@
 import React from 'react'
-import { Group, Navbar as MyNavbar, Text, Divider, Box } from '@mantine/core';
+import { Group, Navbar as MyNavbar, Text, Divider, Box, Avatar, Tooltip } from '@mantine/core';
 import { AiFillHome, AiFillDashboard } from 'react-icons/ai';
 import styled from '@emotion/styled';
 
-const navbarContent = [
+const defaultNavbarContent = [
 	{
 		title: 'Home',
 		icon: AiFillHome,
@@ -19,8 +19,8 @@ const navbarContent = [
 const NavbarButton = styled(Box, {
 	shouldForwardProp: (prop) => !['open'].includes(prop)
 })(({ open }) => ({
-	paddingTop: '10px',
-	paddingBottom: '10px',
+	paddingTop: '6px',
+	paddingBottom: '6px',
 	display: 'flex',
 	justifyContent: open ? 'flex-start' : 'center',
 	alignItems: 'center',
@@ -31,7 +31,7 @@ const NavbarButton = styled(Box, {
 		backgroundColor: '#0f1015',
 		borderLeft: '4px solid #0090e7'
 	},
-	borderRadius: open ? '0px 30px 30px 0px' : ''
+	borderRadius: '0px 30px 30px 0px'
 }))
 
 const NavbarButtonIcon = styled(Box)({
@@ -39,32 +39,41 @@ const NavbarButtonIcon = styled(Box)({
 	justifyContent: 'center',
 	alignItems: 'center',
 	backgroundColor: '#22242e',
-	borderRadius: '100%',
-	padding: '5px'
+	borderRadius: '50%',
+	padding: '5px',
 })
 
 const Navbar = ({ open, setOpen }) => {
+	const [navbarContent, setNavbarContent] = React.useState(defaultNavbarContent);
 
 	const handleNav = (link) => {
 	}
 
 	return (
-		<MyNavbar sx={{ height: '100vh', width: open ? '200px' : '65px' }}>
+		<MyNavbar sx={{ height: '100vh', width: open ? '200px' : '65px', backgroundColor: '#191c24', borderRight: '0px' }}>
 			<MyNavbar.Section sx={{ height: '65px' }} my={10.5}>
 				<Text size={25} sx={{ textAlign: 'center', fontWeight: open ? '600' : '700' }}>
 					{open ? 'HubDex' : 'H'}
 				</Text>
 			</MyNavbar.Section>
-			<Divider />
-			<MyNavbar.Section pt={20}>
-				<Group>
+			<MyNavbar.Section pt={5} sx={{ height: 'calc(100vh - 65px)' }}>
+				<NavbarButton open={open}>
+					<NavbarButtonIcon>
+						<Avatar radius={20} size={25} src={'https://www.bootstrapdash.com/demo/corona-react-free/template/demo_1/preview/static/media/face15.736ec0d9.jpg'} />
+					</NavbarButtonIcon>
+				</NavbarButton>
+			</MyNavbar.Section>
+			<MyNavbar.Section pt={10}>
+				<Group spacing={8}>
 					{navbarContent.map((item, index) => (
-						<NavbarButton key={index} open={open} onClick={() => handleNav(item.link)}>
-							<NavbarButtonIcon>
-								<item.icon size={15} />
-							</NavbarButtonIcon>
-							{open && <Text pl={10}>{item.title}</Text>}
-						</NavbarButton>
+						<Tooltip position='right-end' label={item.title}>
+							<NavbarButton key={index} open={open} onClick={() => handleNav(item.link)}>
+								<NavbarButtonIcon>
+									<item.icon size={16} />
+								</NavbarButtonIcon>
+								{open && <Text pl={10}>{item.title}</Text>}
+							</NavbarButton>
+						</Tooltip>
 					))}
 				</Group>
 			</MyNavbar.Section>
