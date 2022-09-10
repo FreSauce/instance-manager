@@ -11,13 +11,23 @@ const Profile = styled(Group)({
 	}
 })
 
+const CustomizedHeader = styled(MyHeader)({
+	minHeight: '61px',
+	display: 'flex',
+	alignItems: 'center',
+	justifyContent: 'space-between',
+	backgroundColor: '#191c24',
+	borderBottom: '0px'
+})
+
 
 const Header = ({ open, setOpen }) => {
 	return (
-		<MyHeader sx={{ minHeight: '61px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+		<CustomizedHeader>
 			<Group sx={{ alignItems: 'center', justifyContent: 'flex-end', width: open ? '250px' : '120px' }} pl={10}>
 				<Burger
 					opened={open}
+					size={15}
 					onClick={() => setOpen(prev => !prev)}
 					title="Open navigation"
 				/>
@@ -25,9 +35,9 @@ const Header = ({ open, setOpen }) => {
 			<Group sx={{ justifyContent: 'flex-end' }}>
 				<Menu>
 					<Menu.Target>
-						<Profile pr={20} sx={{}}>
-							<Avatar color={'inherit'} />
-							<Text>RookieVesper</Text>
+						<Profile pr={20} sx={{ textDecoration: 'none !important' }}>
+							<Avatar radius={20} color={'inherit'} src={'https://www.bootstrapdash.com/demo/corona-react-free/template/demo_1/preview/static/media/face15.736ec0d9.jpg'} />
+							<Text weight={600}>rookievesper</Text>
 						</Profile>
 					</Menu.Target>
 					<Menu.Dropdown sx={{ width: '150px' }}>
@@ -41,7 +51,7 @@ const Header = ({ open, setOpen }) => {
 					</Menu.Dropdown>
 				</Menu>
 			</Group>
-		</MyHeader>
+		</CustomizedHeader>
 	)
 }
 
