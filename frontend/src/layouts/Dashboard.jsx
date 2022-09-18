@@ -1,10 +1,11 @@
+import { Container } from '@mantine/core'
 import React from 'react'
 
 const Dashboard = () => {
 	return (
-		<div style={{ backgroundColor: '#000000', minHeight: 'inherit' }}>
+		<Container>
 			Dashboard
-		</div>
+		</Container>
 	)
 }
 

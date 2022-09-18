@@ -7,3 +7,7 @@
 * {
   font-family: 'Rubik', sans-serif !important;
 }
+
+.my_container>* {
+  min-height: inherit;
+}
