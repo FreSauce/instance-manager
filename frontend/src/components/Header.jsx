@@ -1,8 +1,11 @@
 import React from 'react'
-import { Header as MyHeader, Group, Text, Burger, Menu, Avatar } from '@mantine/core';
+import { Header as MyHeader, Group, Text, Burger, Menu, Avatar, Button } from '@mantine/core';
 import styled from '@emotion/styled';
-import { AiOutlineLogout, AiFillSetting } from 'react-icons/ai';
+import { AiOutlineLogout, AiFillSetting, AiOutlinePlus } from 'react-icons/ai';
 import { IoIosArrowDown } from 'react-icons/io';
+import { useContext } from 'react';
+import { HomeContext } from '../contexts/HomeContext';
+import { SET_NAVBAR, SET_PAIR_MODAL } from '../utils/constants';
 
 const Profile = styled(Group)({
 	paddingRight: '20px',
@@ -22,19 +25,29 @@ const CustomizedHeader = styled(MyHeader)({
 })
 
 
-const Header = ({ open, setOpen }) => {
+
+const Header = () => {
+	const { state: { currPath, navbar }, dispatch } = useContext(HomeContext);
+	console.log(navbar);
+
 	return (
 		<CustomizedHeader>
-			<Group sx={{ alignItems: 'center', justifyContent: 'flex-end', width: open ? '250px' : '120px' }} pl={5}>
+			<Group sx={{ alignItems: 'center', justifyContent: 'flex-end', width: navbar ? '250px' : '120px' }} pl={5}>
 				<Burger
-					opened={open}
+					opened={navbar}
 					size={15}
-					onClick={() => setOpen(prev => !prev)}
+					onClick={() => dispatch({ type: SET_NAVBAR, payload: !navbar })}
 					title="Open navigation"
 					transitionDuration={0.2}
 				/>
 			</Group>
 			<Group sx={{ justifyContent: 'flex-end' }}>
+				{currPath === '/' ?
+					<Button variant='outline' mr={20} px={10} onClick={() => dispatch({ type: SET_PAIR_MODAL, payload: true })}>
+						<AiOutlinePlus />
+						<Text ml={7}>Pair a New Device</Text>
+					</Button>
+					: null}
 				<Menu>
 					<Menu.Target>
 						<Profile pr={20} sx={{ textDecoration: 'none !important' }}>
@@ -44,7 +57,7 @@ const Header = ({ open, setOpen }) => {
 						</Profile>
 					</Menu.Target>
 					<Menu.Dropdown sx={{ width: '150px' }}>
-						<Menu.Label>Account</Menu.Label>
+						<Menu.Label sx={{ fontWeight: 600 }}>Account</Menu.Label>
 						<Menu.Item icon={<AiFillSetting color='green' />}>
 							<Text weight={500}>Profile</Text>
 						</Menu.Item>
