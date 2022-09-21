@@ -66,13 +66,13 @@ exports.verifyCode = async (req, res, next) => {
       device._id,
       {
         isVerified: true,
-        // user: req.user._id,
+        user: req.user._id,
       },
       { new: true }
     )
-    // .populate({
-    //   path: "user",
-    // });
+    .populate({
+      path: "user",
+    });
     res.status(200).json({
       status: "success",
       updatedDevice,

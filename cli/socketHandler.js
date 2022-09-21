@@ -4,7 +4,7 @@ import chalk from "chalk";
 import http from "http";
 
 export function connectDevice() {
-  const socket = io("http://localhost:3000", {
+  const socket = io("http://localhost:3001", {
     secure: true,
     reconnect: true,
     auth: {
@@ -18,11 +18,12 @@ export function connectDevice() {
   });
 
   socket.on("disconnect", () => {
-    console.log(chalk.redBright("Disconnected from server"));
+    console.log(chalk.yellowBright("Disconnected from server"));
     saveDataToFile("isConnected", socket.connected);
   });
 
   socket.on("connect_error", (error) => {
-    console.log(error);
+    console.log("Error connecting to socket: " + chalk.red(error.message));
+    socket.disconnect();
   });
 }

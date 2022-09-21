@@ -1,6 +1,4 @@
-const os = require("os");
-const si = require("systeminformation");
-var cpus = os.cpus();
+import si from "systeminformation";
 
 const data = {
   cpu: {
@@ -10,6 +8,7 @@ const data = {
   },
   memory: {},
 };
+
 si.currentLoad().then(console.log);
 
 async function fetchMachineData() {

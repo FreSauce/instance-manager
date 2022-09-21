@@ -69,7 +69,7 @@ async function pairDevice() {
       saveDataToFile("deviceId", res.data.device._id);
       saveDataToFile("authToken", res.data.token);
       console.log(
-        chalk.bgGreenBright("The code is: " + res.data.device.generatedCode)
+        "Enter the code: " + chalk.bgGreenBright(res.data.device.generatedCode)
       );
       await verificationPrompt();
     });
