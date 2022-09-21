@@ -1,5 +1,6 @@
 import { Container, Grid, Box } from '@mantine/core'
 import React, { useState } from 'react'
+import PairDevice from '../components/PairDevice'
 import DeviceInfo from './DeviceInfo'
 
 const devices = [
@@ -9,6 +10,7 @@ const devices = [
 
 const Home = () => {
 	const [selected, setSelected] = useState(0);
+
 	return (
 		<Container mx={0} className='my_container' sx={{ maxWidth: 'inherit', minHeight: 'inherit' }}>
 			<Grid grow>
@@ -25,6 +27,7 @@ const Home = () => {
 					<DeviceInfo device={devices[selected]} />
 				</Grid.Col>
 			</Grid>
+			<PairDevice />
 		</Container>
 	)
 }
