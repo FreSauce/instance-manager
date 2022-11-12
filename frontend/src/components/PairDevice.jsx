@@ -8,32 +8,40 @@ const PairDevice = () => {
 	const { state: { pairModal }, dispatch } = useContext(HomeContext);
 	const [active, setActive] = useState(0);
 	const form = useForm({
-		validateInputOnChange: true,
+		// validateInputOnChange: true,
 		initialValues: {
-			deviceId: ''
+			deviceId: '',
+			deviceName: ''
 		},
 		validate: {
-			deviceId: (value) => value !== '' ? null : 'Provide a Valid Device Id',
+			deviceId: (value) => (value !== '' ? null : 'Provide a Valid Device Id'),
+			deviceName: (value) => (value !== '' ? null : 'Device Name should be valid')
 		}
 	})
 
-	const nextButton = () => {
-		setActive(prev => {
-			if (prev === 1) {
-				if (form.isValid()) return prev + 1;
-				else {
-					form.setErrors();
-					return prev;
-				}
-			} return prev < 3 ? prev + 1 : prev;
-		});
+	const handleSubmit = (values, event) => {
+		form.validate();
+		console.log(values);
+		setActive(2);
+	}
+
+	const closeModal = () => {
+		setActive(0);
+		form.clearErrors();
+		dispatch({ type: SET_PAIR_MODAL, payload: false });
+	}
+
+	const nextAction = () => {
+		if (active === 1) handleSubmit();
+		else if (active === 2) closeModal();
+		else setActive((current) => (current < 3 ? current + 1 : current));
 	}
 
 	return (
 		<Modal
 			centered='vertical'
 			opened={pairModal}
-			onClose={() => dispatch({ type: SET_PAIR_MODAL, payload: false })}
+			onClose={closeModal}
 			size='lg'
 		>
 			<Stepper active={active} breakpoint="sm">
@@ -41,12 +49,18 @@ const PairDevice = () => {
 					Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cumque quia earum laborum iure ex dolorum doloribus, expedita, ipsum iste unde atque deleniti! Necessitatibus quam fugit rem, tempore ullam nesciunt nam?
 				</Stepper.Step>
 				<Stepper.Step label="Second step" description="Verify email">
-					<form>
+					<form onSubmit={form.onSubmit(handleSubmit)}>
 						<TextInput
 							mb={13}
 							withAsterisk
 							label='Device ID'
 							{...form.getInputProps('deviceId')}
+						/>
+						<TextInput
+							mb={13}
+							withAsterisk
+							label='Device Name'
+							{...form.getInputProps('deviceName')}
 						/>
 					</form>
 				</Stepper.Step>
@@ -58,8 +72,11 @@ const PairDevice = () => {
 				</Stepper.Completed>
 			</Stepper>
 			<Group position="center" mt="xl">
-				<Button variant="default" onClick={() => setActive((current) => (current > 0 ? current - 1 : current))}>Back</Button>
-				<Button onClick={nextButton}>Next step</Button>
+				{active < 2 ?
+					<Button variant="default" onClick={() => setActive((current) => (current > 0 ? current - 1 : current))}>Back</Button>
+					: null
+				}
+				<Button onClick={nextAction}>{active < 2 ? 'Next step' : 'Close'}</Button>
 			</Group>
 		</Modal>
 	);

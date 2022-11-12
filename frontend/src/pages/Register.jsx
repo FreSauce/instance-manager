@@ -13,12 +13,14 @@ import { showNotification } from "@mantine/notifications";
 import { Link } from "react-router-dom";
 import { useForm } from "@mantine/form";
 import React, { useState } from "react";
-import axios from "axios";
 import validator from "validator";
 import { DOMAIN_NAME } from "../utils/constants";
+import useApi from "../hooks/useApi";
 
 const Register = () => {
   const [loading, setLoading] = useState(false);
+
+  const { api } = useApi();
 
   const form = useForm({
     validateInputOnChange: true,
@@ -38,19 +40,15 @@ const Register = () => {
           return "Username must be at most 20 characters long";
       },
       email: (value) => (validator.isEmail(value) ? null : "Invalid Email"),
-      password: (value) =>
-        value.length >= 8
-          ? null
-          : "Password must be at least 8 characters long",
-      confirmPassword: (value, { password }) =>
-        value === password ? null : "Passwords do not match",
-      terms: (value) =>
-        value ? null : "You must agree to terms and conditions",
+      password: (value) => value.length >= 8 ? null : "Password must be at least 8 characters long",
+      confirmPassword: (value, { password }) => value === password ? null : "Passwords do not match",
+      terms: (value) => value ? null : "You must agree to terms and conditions",
     },
   });
   const handleSubmit = async (values) => {
     setLoading(true);
-    axios
+
+    api
       .post(DOMAIN_NAME + "/users/signup", {
         name: values.username,
         email: values.email,

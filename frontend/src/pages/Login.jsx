@@ -1,11 +1,13 @@
 import { Container, Grid, Box, TextInput, PasswordInput, Button, Text, Checkbox, MediaQuery } from '@mantine/core'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from '@mantine/form';
 import React, { useState } from 'react'
 import validator from 'validator';
+import { showNotification } from '@mantine/notifications';
 
 const Login = () => {
 	const [loading, setLoading] = useState(false);
+	const navigate = useNavigate();
 
 	const form = useForm({
 		validateInputOnChange: true,
@@ -24,6 +26,12 @@ const Login = () => {
 		await new Promise((resolve) => setTimeout(resolve, 1000));
 		console.log(values);
 		setLoading(false);
+		showNotification({
+			title: 'Login Successful',
+			message: 'You have successfully logged in',
+			onClose: () => navigate('/', { replace: true })
+		})
+		navigate('/', { replace: true });
 	};
 
 	return (
